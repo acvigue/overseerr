@@ -102,7 +102,7 @@
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.5",
     "@types/react-select": "^4.0.15",
-    "@types/react-toast-notifications": "^2.4.0",
+    "@types/react-toast-notifications": "^2.4.1",
     "@types/react-transition-group": "^4.4.1",
     "@types/secure-random-password": "^0.2.0",
     "@types/swagger-ui-express": "^4.1.2",
