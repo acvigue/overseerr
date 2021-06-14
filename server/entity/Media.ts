@@ -1,24 +1,23 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
+  AfterLoad,
   Column,
-  Index,
-  OneToMany,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   getRepository,
   In,
-  AfterLoad,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { MediaRequest } from './MediaRequest';
+import RadarrAPI from '../api/servarr/radarr';
+import SonarrAPI from '../api/servarr/sonarr';
 import { MediaStatus, MediaType } from '../constants/media';
-import logger from '../logger';
-import Season from './Season';
-import { getSettings } from '../lib/settings';
-import RadarrAPI from '../api/radarr';
 import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
-import SonarrAPI from '../api/sonarr';
-import { MediaServerType } from '../constants/server';
+import { getSettings } from '../lib/settings';
+import logger from '../logger';
+import { MediaRequest } from './MediaRequest';
+import Season from './Season';
 
 @Entity()
 class Media {
@@ -134,41 +133,36 @@ class Media {
   @Column({ nullable: true })
   public ratingKey4k?: string;
 
-  @Column({ nullable: true })
-  public jellyfinMediaId?: string;
-
-  @Column({ nullable: true })
-  public jellyfinMediaId4k?: string;
-
   public serviceUrl?: string;
   public serviceUrl4k?: string;
   public downloadStatus?: DownloadingItem[] = [];
   public downloadStatus4k?: DownloadingItem[] = [];
 
-  public mediaUrl?: string;
-  public mediaUrl4k?: string;
+  public plexUrl?: string;
+  public plexUrl4k?: string;
 
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
   }
 
   @AfterLoad()
-  public setMediaUrls(): void {
-    const settings = getSettings();
-    if (settings.main.mediaServerType == MediaServerType.PLEX) {
-      if (this.ratingKey) {
-        this.mediaUrl = `https://app.plex.tv/desktop#!/server/${settings.plex.machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey}`;
-      }
-      if (this.ratingKey4k) {
-        this.mediaUrl4k = `https://app.plex.tv/desktop#!/server/${settings.plex.machineId}/details?key=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}`;
-      }
-    } else {
-      if (this.jellyfinMediaId) {
-        this.mediaUrl = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId}&context=home&serverId=${settings.jellyfin.serverId}`;
-      }
-      if (this.jellyfinMediaId4k) {
-        this.mediaUrl4k = `${settings.jellyfin.hostname}/web/#!/details?id=${this.jellyfinMediaId4k}&context=home&serverId=${settings.jellyfin.serverId}`;
-      }
+  public setPlexUrls(): void {
+    const { machineId, webAppUrl } = getSettings().plex;
+
+    if (this.ratingKey) {
+      this.plexUrl = `${
+        webAppUrl ? webAppUrl : 'https://app.plex.tv/desktop'
+      }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
+        this.ratingKey
+      }`;
+    }
+
+    if (this.ratingKey4k) {
+      this.plexUrl4k = `${
+        webAppUrl ? webAppUrl : 'https://app.plex.tv/desktop'
+      }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
+        this.ratingKey4k
+      }`;
     }
   }
 
@@ -184,10 +178,7 @@ class Media {
         if (server) {
           this.serviceUrl = server.externalUrl
             ? `${server.externalUrl}/movie/${this.externalServiceSlug}`
-            : RadarrAPI.buildRadarrUrl(
-                server,
-                `/movie/${this.externalServiceSlug}`
-              );
+            : RadarrAPI.buildUrl(server, `/movie/${this.externalServiceSlug}`);
         }
       }
 
@@ -200,7 +191,7 @@ class Media {
         if (server) {
           this.serviceUrl4k = server.externalUrl
             ? `${server.externalUrl}/movie/${this.externalServiceSlug4k}`
-            : RadarrAPI.buildRadarrUrl(
+            : RadarrAPI.buildUrl(
                 server,
                 `/movie/${this.externalServiceSlug4k}`
               );
@@ -218,10 +209,7 @@ class Media {
         if (server) {
           this.serviceUrl = server.externalUrl
             ? `${server.externalUrl}/series/${this.externalServiceSlug}`
-            : SonarrAPI.buildSonarrUrl(
-                server,
-                `/series/${this.externalServiceSlug}`
-              );
+            : SonarrAPI.buildUrl(server, `/series/${this.externalServiceSlug}`);
         }
       }
 
@@ -234,7 +222,7 @@ class Media {
         if (server) {
           this.serviceUrl4k = server.externalUrl
             ? `${server.externalUrl}/series/${this.externalServiceSlug4k}`
-            : SonarrAPI.buildSonarrUrl(
+            : SonarrAPI.buildUrl(
                 server,
                 `/series/${this.externalServiceSlug4k}`
               );

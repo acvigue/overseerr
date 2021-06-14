@@ -1,3 +1,17 @@
+import type { PaginatedResponse } from './common';
+
+export type LogMessage = {
+  timestamp: string;
+  level: string;
+  label: string;
+  message: string;
+  data?: Record<string, unknown>;
+};
+
+export interface LogsResultsResponse extends PaginatedResponse {
+  results: LogMessage[];
+}
+
 export interface SettingsAboutResponse {
   version: string;
   totalRequests: number;
@@ -6,17 +20,21 @@ export interface SettingsAboutResponse {
 }
 
 export interface PublicSettingsResponse {
-  jellyfinHost?: string;
-  jellyfinServerName?: string;
   initialized: boolean;
   applicationTitle: string;
+  applicationUrl: string;
   hideAvailable: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
-  mediaServerType: number;
+  partialRequestsEnabled: boolean;
+  cacheImages: boolean;
+  vapidPublic: string;
+  enablePushRegistration: boolean;
+  locale: string;
+  emailEnabled: boolean;
 }
 
 export interface CacheItem {
@@ -29,4 +47,11 @@ export interface CacheItem {
     ksize: number;
     vsize: number;
   };
+}
+
+export interface StatusResponse {
+  version: string;
+  commitTag: string;
+  updateAvailable: boolean;
+  commitsBehind: number;
 }

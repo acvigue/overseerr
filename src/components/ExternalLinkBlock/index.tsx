@@ -1,13 +1,11 @@
 import React from 'react';
+import { MediaType } from '../../../server/constants/media';
+import ImdbLogo from '../../assets/services/imdb.svg';
+import PlexLogo from '../../assets/services/plex.svg';
+import RTLogo from '../../assets/services/rt.svg';
 import TmdbLogo from '../../assets/services/tmdb.svg';
 import TvdbLogo from '../../assets/services/tvdb.svg';
-import ImdbLogo from '../../assets/services/imdb.svg';
-import RTLogo from '../../assets/services/rt.svg';
-import PlexLogo from '../../assets/services/plex.svg';
-import JellyfinLogo from '../../assets/services/jellyfin.svg';
-import { MediaType } from '../../../server/constants/media';
-import useSettings from '../../hooks/useSettings';
-import { MediaServerType } from '../../../server/constants/server';
+import useLocale from '../../hooks/useLocale';
 
 interface ExternalLinkBlockProps {
   mediaType: 'movie' | 'tv';
@@ -15,7 +13,7 @@ interface ExternalLinkBlockProps {
   tvdbId?: number;
   imdbId?: string;
   rtUrl?: string;
-  mediaUrl?: string;
+  plexUrl?: string;
 }
 
 const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
@@ -24,33 +22,26 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
   tvdbId,
   imdbId,
   rtUrl,
-  mediaUrl,
+  plexUrl,
 }) => {
-  const settings = useSettings();
+  const { locale } = useLocale();
+
   return (
-    <div className="flex items-center justify-end">
-      {mediaUrl && (
+    <div className="flex items-center justify-center w-full space-x-5">
+      {plexUrl && (
         <a
-          href={mediaUrl}
-          className={`${
-            settings.currentSettings.mediaServerType === MediaServerType.PLEX
-              ? 'w-8'
-              : 'w-14'
-          } mx-2 transition duration-300 opacity-50 hover:opacity-100`}
+          href={plexUrl}
+          className="w-12 transition duration-300 opacity-50 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
-          {settings.currentSettings.mediaServerType === MediaServerType.PLEX ? (
-            <PlexLogo />
-          ) : (
-            <JellyfinLogo />
-          )}
+          <PlexLogo />
         </a>
       )}
       {tmdbId && (
         <a
-          href={`https://www.themoviedb.org/${mediaType}/${tmdbId}`}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          href={`https://www.themoviedb.org/${mediaType}/${tmdbId}?language=${locale}`}
+          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -60,7 +51,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {tvdbId && mediaType === MediaType.TV && (
         <a
           href={`http://www.thetvdb.com/?tab=series&id=${tvdbId}`}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          className="transition duration-300 opacity-50 w-9 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -70,7 +61,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {imdbId && (
         <a
           href={`https://www.imdb.com/title/${imdbId}`}
-          className="w-8 mx-2 transition duration-300 opacity-50 hover:opacity-100"
+          className="w-8 transition duration-300 opacity-50 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >
@@ -80,7 +71,7 @@ const ExternalLinkBlock: React.FC<ExternalLinkBlockProps> = ({
       {rtUrl && (
         <a
           href={`${rtUrl}`}
-          className="mx-2 transition duration-300 opacity-50 w-14 hover:opacity-100"
+          className="transition duration-300 opacity-50 w-14 hover:opacity-100"
           target="_blank"
           rel="noreferrer"
         >

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
+import { MediaType } from '../../../constants/media';
 import logger from '../../../logger';
 import { getSettings, NotificationAgentPushbullet } from '../../settings';
 import { BaseAgent, NotificationAgent, NotificationPayload } from './agent';
@@ -11,7 +12,8 @@ interface PushbulletPayload {
 
 class PushbulletAgent
   extends BaseAgent<NotificationAgentPushbullet>
-  implements NotificationAgent {
+  implements NotificationAgent
+{
   protected getSettings(): NotificationAgentPushbullet {
     if (this.settings) {
       return this.settings;
@@ -22,12 +24,10 @@ class PushbulletAgent
     return settings.notifications.agents.pushbullet;
   }
 
-  public shouldSend(type: Notification): boolean {
-    if (
-      this.getSettings().enabled &&
-      this.getSettings().options.accessToken &&
-      hasNotificationType(type, this.getSettings().types)
-    ) {
+  public shouldSend(): boolean {
+    const settings = this.getSettings();
+
+    if (settings.enabled && settings.options.accessToken) {
       return true;
     }
 
@@ -46,11 +46,13 @@ class PushbulletAgent
 
     const title = payload.subject;
     const plot = payload.message;
-    const username = payload.notifyUser.displayName;
+    const username = payload.request?.requestedBy.displayName;
 
     switch (type) {
       case Notification.MEDIA_PENDING:
-        messageTitle = 'New Request';
+        messageTitle = `New ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request`;
         message += `${title}`;
         if (plot) {
           message += `\n\n${plot}`;
@@ -59,7 +61,20 @@ class PushbulletAgent
         message += `\nStatus: Pending Approval`;
         break;
       case Notification.MEDIA_APPROVED:
-        messageTitle = 'Request Approved';
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Approved`;
+        message += `${title}`;
+        if (plot) {
+          message += `\n\n${plot}`;
+        }
+        message += `\n\nRequested By: ${username}`;
+        message += `\nStatus: Processing`;
+        break;
+      case Notification.MEDIA_AUTO_APPROVED:
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Automatically Approved`;
         message += `${title}`;
         if (plot) {
           message += `\n\n${plot}`;
@@ -68,7 +83,9 @@ class PushbulletAgent
         message += `\nStatus: Processing`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        messageTitle = 'Now Available';
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Now Available`;
         message += `${title}`;
         if (plot) {
           message += `\n\n${plot}`;
@@ -77,7 +94,9 @@ class PushbulletAgent
         message += `\nStatus: Available`;
         break;
       case Notification.MEDIA_DECLINED:
-        messageTitle = 'Request Declined';
+        messageTitle = `${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request Declined`;
         message += `${title}`;
         if (plot) {
           message += `\n\n${plot}`;
@@ -86,7 +105,9 @@ class PushbulletAgent
         message += `\nStatus: Declined`;
         break;
       case Notification.MEDIA_FAILED:
-        messageTitle = 'Failed Request';
+        messageTitle = `Failed ${
+          payload.media?.mediaType === MediaType.TV ? 'Series' : 'Movie'
+        } Request`;
         message += `${title}`;
         if (plot) {
           message += `\n\n${plot}`;
@@ -100,6 +121,10 @@ class PushbulletAgent
         break;
     }
 
+    for (const extra of payload.extra ?? []) {
+      message += `\n${extra.name}: ${extra.value}`;
+    }
+
     return {
       title: messageTitle,
       body: message,
@@ -110,16 +135,23 @@ class PushbulletAgent
     type: Notification,
     payload: NotificationPayload
   ): Promise<boolean> {
-    logger.debug('Sending Pushbullet notification', { label: 'Notifications' });
+    const settings = this.getSettings();
+
+    if (!hasNotificationType(type, settings.types ?? 0)) {
+      return true;
+    }
+
+    logger.debug('Sending Pushbullet notification', {
+      label: 'Notifications',
+      type: Notification[type],
+      subject: payload.subject,
+    });
+
     try {
-      const endpoint = 'https://api.pushbullet.com/v2/pushes';
-
-      const { accessToken } = this.getSettings().options;
-
       const { title, body } = this.constructMessageDetails(type, payload);
 
       await axios.post(
-        endpoint,
+        'https://api.pushbullet.com/v2/pushes',
         {
           type: 'note',
           title: title,
@@ -127,7 +159,7 @@ class PushbulletAgent
         } as PushbulletPayload,
         {
           headers: {
-            'Access-Token': accessToken,
+            'Access-Token': settings.options.accessToken,
           },
         }
       );
@@ -136,8 +168,12 @@ class PushbulletAgent
     } catch (e) {
       logger.error('Error sending Pushbullet notification', {
         label: 'Notifications',
-        message: e.message,
+        type: Notification[type],
+        subject: payload.subject,
+        errorMessage: e.message,
+        response: e.response?.data,
       });
+
       return false;
     }
   }
