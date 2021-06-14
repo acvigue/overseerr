@@ -61,7 +61,7 @@
     "react-truncate-markup": "^5.1.0",
     "react-use-clipboard": "1.0.7",
     "reflect-metadata": "^0.1.13",
-    "secure-random-password": "^0.2.2",
+    "secure-random-password": "^0.2.3",
     "sqlite3": "^5.0.2",
     "swagger-ui-express": "^4.1.6",
     "swr": "^0.5.6",

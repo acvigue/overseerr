@@ -12193,10 +12193,10 @@ screenfull@^5.1.0:
   resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-5.1.0.tgz#85c13c70f4ead4c1b8a935c70010dfdcd2c0e5c8"
   integrity sha512-dYaNuOdzr+kc6J6CFcBrzkLCfyGcMg+gWkJ8us93IQ7y1cevhQAugFsaCdMHb6lw8KV3xPzSxzH7zM1dQap9mA==
 
-secure-random-password@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/secure-random-password/-/secure-random-password-0.2.2.tgz#eb043bcada24bc372bc98457845222b2a96d2058"
-  integrity sha512-L1bcFB6CY/L4snizCej/yVmRGguor5ASgk2/ea4iYjYNbEPjJ7W++4o8hQGvfrS1WWqDKUNi/Z3QEHAjkibqfw==
+secure-random-password@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/secure-random-password/-/secure-random-password-0.2.3.tgz#cc99714a824328f251b11b35b557b685c09717db"
+  integrity sha512-2zpmr6pK3CZGIS9fgApFw00/tKEBVbJTqe4AZLrLNgahCK6ueIR5uMzvbERNibr8hkWneMcOqDcm4wpHWUxrYw==
   dependencies:
     secure-random "^1.1.2"
 
