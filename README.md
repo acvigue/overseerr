@@ -67,12 +67,12 @@ MAKE SURE YOU HAVE ALL WINDWOS UPDATE PENDED AND AFTER INSTALLING THE PROGRAMS A
 ## Setup NSSM with Overserr
 1. type in an administrative Powershell `nssm install Overseerr`
 2. Then it should pull up with a UI. On the first page for the Path we want to put powershell `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
-3. Fo the Startup Directory if you have followed this tut word for word you need to put this as the startup path `C:\Tools\overseerr` if you havent it would be `C:\(Directory where you git cloned the repo)\overseerr`
+3. For the Startup Directory if you have followed this tut word for word you need to put this as the startup path `C:\Tools\overseerr` if you havent it would be `C:\(Directory where you git cloned the repo)\overseerr`
 4. Now put for the  Arguments `yarn start`
 It should look like below
 
 
-![image](https://user-images.githubusercontent.com/35183970/125870901-c9f3d226-e46b-427c-960d-01f51596786e.png)
+![Overseerr NSSM Demo](https://i.imgur.com/saK6nqc.png)
 
 
 6. Click Install Service
