@@ -16,13 +16,14 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
-**Overseerr** is a free and open source software application for managing requests for your media library. It integrates with your existing services, such as **[Sonarr](https://sonarr.tv/)**, **[Radarr](https://radarr.video/)**, and **[Plex](https://www.plex.tv/)**!
+**Overseerr** is a free and open source software application for managing requests for your media library. It integrates with your existing services, such as **[Sonarr](https://sonarr.tv/)**, **[Radarr](https://radarr.video/)**, and **[Jellyfin](https://www.jellyfin.org/)**, **[Plex](https://www.plex.tv/)**! 
 
 ## Current Features
 
 - Full Plex integration. Authenticate and manage user access with Plex!
+- Full Jellyfin integration. Authenticate and manage user access with Jellyfin!
 - Easy integration with your existing services. Currently, Overseerr supports Sonarr and Radarr. More to come!
-- Plex library sync, to keep track of the titles which are already available.
+- Jellyfin library sync, to keep track of the titles which are already available.
 - Customizable request system, which allows users to request individual seasons or movies in a friendly, easy-to-use interface.
 - Incredibly simple request management UI. Don't dig through the app to simply approve recent requests!
 - Granular permission system.
@@ -37,9 +38,44 @@
 
 ## Getting Started
 
-Check out our documentation for instructions on how to install and run Overseerr:
+## Requirments
+1. Git Bash **[Git Direct Downoad](https://git-scm.com/download/win)**
+2. NodeJs [NodeJS Direct x64 Download](https://nodejs.org/dist/v14.17.3/node-v14.17.3-x64.msi)** **[NodeJS Direct x86 Download](https://nodejs.org/dist/v14.17.3/node-v14.17.3-x86.msi)**
 
-https://docs.overseerr.dev/getting-started/installation
+**NOTE IMPORTANT**
+MAKE SURE YOU HAVE ALL WINDWOS UPDATE PENDED AND AFTER INSTALLING THE PROGRAMS ABOVE RESTART THE OS BEFORE CONTINUE FOR GOOD MEASURES.
+
+## Running on Windows
+
+1. Open Powershell with administrative rights.
+2. Get yarn by typing in powershell `npm install --global yarn`
+3. Once yarn is installed close powershell and open a new powershell with adminstrative privelages.
+5. Go to a directory where you want your app to run. I normally run all binaries in `C:\Tools\(appname)` so mine is C:\Tools
+6. Then run `git clone https://github.com/sct/overseerr.git`
+7. Then once cloned youll see it ripped a new folder in `C:\Tools` its a folder called `overseerr`
+8. Now open the folder overseerr directory in powershell by running `cd C:\Tools\overseerr`
+9. once in the directory `C:\Tools\overseerr` run `yarn`
+10. Then once finished (it will take a bit of a long time) run `yarn build`
+11. If it built with no errors then run `yarn dev` which will run the overseerr and load up localhost:5055 on your browser.
+12. Watch the powershell and just wait for the webpage on your browser to run oveseerr you should see the homepage once it is loaded in powershell.
+
+## Auto-Start at Windows Startup
+ ### Requirmenets
+ Install NSSM [NSSM Direct Download](https://nssm.cc/release/nssm-2.24.zip)
+
+## Setup NSSM with Overserr
+1. type in an administrative Powershell `nssm install Overseerr`
+2. Then it should pull up with a UI. On the first page for the Path we want to put powershell `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+3. Fo the Startup Directory if you have followed this tut word for word you need to put this as the startup path `C:\Tools\overseerr` if you havent it would be `C:\(Directory where you git cloned the repo)\overseerr`
+4. Now put for the  Arguments `yarn dev`
+It should look like below
+
+
+![image](https://user-images.githubusercontent.com/35183970/125870901-c9f3d226-e46b-427c-960d-01f51596786e.png)
+
+
+6. Click Install Service
+7. Open up a powershell as administrator and run nssm start Overseerr or go to services.msc and find overseerr task and right click and select start
 
 ## Running Overseerr
 
