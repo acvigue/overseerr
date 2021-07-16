@@ -49,14 +49,15 @@ MAKE SURE YOU HAVE ALL WINDWOS UPDATE PENDED AND AFTER INSTALLING THE PROGRAMS A
 
 1. Open Powershell with administrative rights.
 2. Get yarn by typing in powershell `npm install --global yarn`
-3. Once yarn is installed close powershell and open a new powershell with adminstrative privelages.
+3. Now run in powershell `npm install -g win-node-env` so it can correctly build for windows.
+4. Once yarn is installed close powershell and open a new powershell with adminstrative privelages.
 5. Go to a directory where you want your app to run. I normally run all binaries in `C:\Tools\(appname)` so mine is C:\Tools
 6. Then run `git clone https://github.com/sct/overseerr.git`
 7. Then once cloned youll see it ripped a new folder in `C:\Tools` its a folder called `overseerr`
 8. Now open the folder overseerr directory in powershell by running `cd C:\Tools\overseerr`
 9. once in the directory `C:\Tools\overseerr` run `yarn`
 10. Then once finished (it will take a bit of a long time) run `yarn build`
-11. If it built with no errors then run `yarn dev` which will run the overseerr and load up localhost:5055 on your browser.
+11. If it built with no errors then run `yarn start` which will run the overseerr and load up localhost:5055 on your browser.
 12. Watch the powershell and just wait for the webpage on your browser to run oveseerr you should see the homepage once it is loaded in powershell.
 
 ## Auto-Start at Windows Startup
@@ -67,7 +68,7 @@ MAKE SURE YOU HAVE ALL WINDWOS UPDATE PENDED AND AFTER INSTALLING THE PROGRAMS A
 1. type in an administrative Powershell `nssm install Overseerr`
 2. Then it should pull up with a UI. On the first page for the Path we want to put powershell `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
 3. Fo the Startup Directory if you have followed this tut word for word you need to put this as the startup path `C:\Tools\overseerr` if you havent it would be `C:\(Directory where you git cloned the repo)\overseerr`
-4. Now put for the  Arguments `yarn dev`
+4. Now put for the  Arguments `yarn start`
 It should look like below
 
 
